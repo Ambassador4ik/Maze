@@ -7,7 +7,17 @@ import heightmap.providers.PerlinNoiseHMProvider;
 import heightmap.providers.ProviderType;
 import heightmap.providers.RandomHMProvider;
 import lombok.experimental.UtilityClass;
+import maze.Maze;
+import maze.MazeFactory;
 import maze.Node;
+import maze.generator.DFSMazeGenerator;
+import maze.generator.GeneratorType;
+import maze.solver.AStarSolver;
+import maze.solver.SolverType;
+import maze.solver.functions.ConstantCostFunc;
+import maze.solver.functions.CostFuncType;
+import maze.solver.functions.NonLinearCostFunc;
+import visuals.MazeVisualizer;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -16,47 +26,55 @@ import java.io.IOException;
 @UtilityClass
 public class Main {
     public static void main(String[] args) {
-        PerlinNoiseParams perlinNoiseParams = new PerlinNoiseParams(
-            10,
-            10.0,
-            6,
-            0.5,
-            2.0
-        );
 
-        HeightMapProvider rnp = HeightMapProviderFactory.createProvider(
+        HeightMapProvider heightMapProvider = HeightMapProviderFactory.createProvider(
             ProviderType.PERLIN_NOISE,
-            perlinNoiseParams
+            new PerlinNoiseParams(10, 10.0, 6, 0.5, 2.0)
         );
 
-        Node[][] nodes = new Node[20][20];
+        Maze maze = MazeFactory.createSolvedMaze(
+            50,
+            50,
+            heightMapProvider,
+            GeneratorType.DFS,
+            SolverType.ASTAR,
+            CostFuncType.NON_LINEAR
+        );
 
-        for (int i = 0; i < nodes.length; i++) {
-            for (int j = 0; j < nodes[0].length; j++) {
-                nodes[i][j] = new Node(i, j, 0);
-            }
-        }
+        maze.solution().printSolutionToFile("solution1.txt");
+        System.out.println(maze.solution().totalCost());
+        //maze.solveWith(new AStarSolver(new ConstantCostFunc()));
+        //System.out.println(maze.solution().costWith(new NonLinearCostFunc()));
+        //maze.solution().printSolutionToFile("solution2.txt");
 
-        rnp.fillMap(nodes);
-
-        String outputFilePath = "heights.txt"; // Specify your desired file path
+        // Define output file path
+        String outputFilePath = "heights_and_maze.txt"; // Updated file name for clarity
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
-            for (int i = 0; i < nodes.length; i++) {
-                for (int j = 0; j < nodes[0].length; j++) {
-                    writer.write(Integer.toString(nodes[i][j].height()));
-                    writer.write(" ");
+            for (int i = 0; i < 50; i++) {
+                for (int j = 0; j < 50; j++) {
+                    Node node = maze.grid()[i][j];
+                    int height = node.height(); // Assuming height() is a getter method
+
+                    // Retrieve wall information: 1 for present, 0 for absent
+                    int north = node.walls().hasWall(Node.Direction.NORTH) ? 1 : 0;
+                    int south = node.walls().hasWall(Node.Direction.SOUTH) ? 1 : 0;
+                    int east  = node.walls().hasWall(Node.Direction.EAST)  ? 1 : 0;
+                    int west  = node.walls().hasWall(Node.Direction.WEST)  ? 1 : 0;
+
+                    // Format: height,N,S,E,W
+                    String cellData = String.format("%d,%d,%d,%d,%d", height, north, south, east, west);
+                    writer.write(cellData + " ");
                 }
                 writer.write("\n");
-                // Remove the newline to have all data in a single line
-                // If you want to separate rows without newlines, you can use a different delimiter
+                // Each row in the file corresponds to a row in the grid
             }
-            // Optionally, you can add a newline at the end of the file
-            // writer.newLine();
-            System.out.println("Height map successfully written to " + outputFilePath);
+            System.out.println("Height map and maze structure successfully written to " + outputFilePath);
         } catch (IOException e) {
-            System.err.println("An error occurred while writing the height map to the file:");
+            System.err.println("An error occurred while writing the data to the file:");
             e.printStackTrace();
         }
+
+        MazeVisualizer.generateMazeImage(maze, 10, "img.png");
     }
 }
