@@ -29,12 +29,12 @@ public class Main {
 
         HeightMapProvider heightMapProvider = HeightMapProviderFactory.createProvider(
             ProviderType.PERLIN_NOISE,
-            new PerlinNoiseParams(10, 10.0, 6, 0.5, 2.0)
+            new PerlinNoiseParams(20, 10.0, 6, 0.5, 2.0)
         );
 
         Maze maze = MazeFactory.createSolvedMaze(
-            50,
-            50,
+            100,
+            100,
             heightMapProvider,
             GeneratorType.DFS,
             SolverType.ASTAR,
@@ -51,8 +51,8 @@ public class Main {
         String outputFilePath = "heights_and_maze.txt"; // Updated file name for clarity
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFilePath))) {
-            for (int i = 0; i < 50; i++) {
-                for (int j = 0; j < 50; j++) {
+            for (int i = 0; i < 100; i++) {
+                for (int j = 0; j < 100; j++) {
                     Node node = maze.grid()[i][j];
                     int height = node.height(); // Assuming height() is a getter method
 

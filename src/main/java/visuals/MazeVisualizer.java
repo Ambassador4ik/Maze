@@ -88,8 +88,8 @@ public class MazeVisualizer {
 
         // Highlight solution path if available
         if (maze.solution() != null) {
-            g.setColor(Color.YELLOW); // Choose a contrasting color
-            g.setStroke(new BasicStroke(cellSize / 4)); // Thicker line for visibility
+            g.setColor(Color.BLUE); // Choose a contrasting color
+            g.setStroke(new BasicStroke(cellSize / 3)); // Thicker line for visibility
 
             List<Node> path = maze.solution().path();
             for (int i = 0; i < path.size() - 1; i++) {
