@@ -1,35 +1,24 @@
-package maze.generator;
+package maze.generator.algorithms;
 
 import maze.Node;
 import maze.Node.Direction;
+import maze.generator.AbstractMazeGenerator;
 import util.Pair;
 
-import java.security.SecureRandom;
-import java.util.*;
-import static maze.Maze.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+import static maze.Maze.getNeighborCoordinates;
+import static maze.Maze.removeWall;
 
-public class DFSMazeGenerator implements MazeGenerator {
-    // Probability to remove an additional wall to create loops
-    private static final double LOOP_PROBABILITY = 0.05;
-    private final SecureRandom random;
-
+public class DFSMazeGenerator extends AbstractMazeGenerator {
     public DFSMazeGenerator() {
-        this.random = new SecureRandom();
+        super();
     }
 
     @Override
-    public void generate(Node[][] grid) {
-        int height = grid.length;
-        if (height == 0) return;
-        int width = grid[0].length;
-
-        // Initialize all cells as unvisited
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                grid[y][x].visited(false);
-            }
-        }
-
+    protected void generateMaze(Node[][] grid, int height, int width) {
         // Stack for DFS
         Deque<Node> stack = new ArrayDeque<>();
 
@@ -61,9 +50,20 @@ public class DFSMazeGenerator implements MazeGenerator {
                 stack.pop();
             }
         }
+    }
 
-        addLoops(grid, width, height, LOOP_PROBABILITY);
-
-        setupExits(grid, width, height);
+    // Helper method to get unvisited neighbors
+    private List<Direction> getUnvisitedNeighbors(Node current, Node[][] grid, int width, int height) {
+        List<Direction> directions = new ArrayList<>();
+        for (Direction dir : Direction.values()) {
+            Pair<Integer, Integer> neighborCoords = getNeighborCoordinates(current, dir, width, height);
+            if (neighborCoords != null) {
+                Node neighbor = grid[neighborCoords.value()][neighborCoords.key()];
+                if (!neighbor.visited()) {
+                    directions.add(dir);
+                }
+            }
+        }
+        return directions;
     }
 }

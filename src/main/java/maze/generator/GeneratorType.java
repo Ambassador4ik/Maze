@@ -1,10 +1,26 @@
 package maze.generator;
 
+import maze.generator.algorithms.DFSMazeGenerator;
+import maze.generator.algorithms.KruskalMazeGenerator;
+import maze.generator.algorithms.PrimMazeGenerator;
+
 public enum GeneratorType {
     DFS {
         @Override
         public MazeGenerator createGenerator() {
             return new DFSMazeGenerator();
+        }
+    },
+    KRUSKAL {
+        @Override
+        public MazeGenerator createGenerator() {
+            return new KruskalMazeGenerator();
+        }
+    },
+    PRIM {
+        @Override
+        public MazeGenerator createGenerator() {
+            return new PrimMazeGenerator();
         }
     };
 

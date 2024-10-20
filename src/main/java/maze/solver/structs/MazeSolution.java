@@ -1,4 +1,4 @@
-package maze.solver;
+package maze.solver.structs;
 
 import lombok.Getter;
 import maze.Node;

@@ -3,7 +3,7 @@ package maze;
 import heightmap.providers.HeightMapProvider;
 import lombok.Getter;
 import maze.generator.MazeGenerator;
-import maze.solver.MazeSolution;
+import maze.solver.structs.MazeSolution;
 import maze.solver.MazeSolver;
 import util.Pair;
 import java.security.SecureRandom;
