@@ -18,7 +18,7 @@ public enum SolverType {
             return new SPFASolver(costFunc);
         }
     },
-    BELLMAN_FORD{
+    BELLMAN_FORD {
         @Override
         public MazeSolver createSolver(CostFunc costFunc) {
             return new BellmanFordSolver(costFunc);
@@ -26,4 +26,12 @@ public enum SolverType {
     };
 
     public abstract MazeSolver createSolver(CostFunc costFunc);
+
+    public static SolverType fromString(String typeStr) {
+        try {
+            return SolverType.valueOf(typeStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid solver type: " + typeStr);
+        }
+    }
 }

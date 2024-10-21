@@ -1,0 +1,43 @@
+# Maze settings
+[maze]
+height = 50
+width = 50
+
+# Maze visualization settings
+[visuals]
+image = true
+console = true
+filename = "maze.png"
+
+# Maze generator settings
+# Valid types are "DFS", "PRIM", "KRUSKAL"
+[generator]
+type = "DFS"
+# Probability to remove a wall during a post-processing step
+# The maze will have more solutions, but solution complexity will reduce as it approaches 1
+loop_probability = 0.05
+
+# Surface generator settings
+# Valid types are "PERLIN_NOISE", "RANDOM"
+[surface]
+type = "PERLIN_NOISE"
+# Amplitude of heights; the terrain will vary from [-n, n]
+height_range = 10
+
+# Maze solver settings
+# Valid types are "BELLMAN_FORD", "SPFA", "JOHNSONS"
+[solver]
+type = "BELLMAN_FORD"
+
+# Cost function used by solver for path optimization
+# Valid types are "TANH", "CONST", "LINEAR", "NON_LINEAR"
+[costfunc]
+type = "TANH"
+
+# Perlin noise surface generator settings
+# Learn more at https://en.wikipedia.org/wiki/Perlin_noise
+[perlin]
+scale = 10.0
+octaves = 6
+persistence = 0.5
+lacunarity = 2.0

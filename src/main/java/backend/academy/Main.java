@@ -1,5 +1,8 @@
 package backend.academy;
 
+import config.Config;
+import config.ConfigLoader;
+import config.Configuration;
 import heightmap.HeightMapProviderFactory;
 import heightmap.params.PerlinNoiseParams;
 import heightmap.providers.HeightMapProvider;
@@ -16,24 +19,29 @@ import maze.solver.functions.TanhCostFunc;
 import visuals.MazeVisualizer;
 
 import java.awt.Color;
+import java.io.IOException;
 
 @UtilityClass
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Configuration config = Config.getInstance();
 
         HeightMapProvider heightMapProvider = HeightMapProviderFactory.createProvider(
             ProviderType.PERLIN_NOISE,
-            new PerlinNoiseParams(10, 10.0, 6, 0.5, 2.0)
+            new PerlinNoiseParams(
+                config.surface().heightRange()
+            )
         );
 
         Maze maze = MazeFactory.createSolvedMaze(
-            50,
-            50,
+            config.maze().width(),
+            config.maze().height(),
             heightMapProvider,
-            GeneratorType.DFS,
-            SolverType.JOHNSONS,
-            CostFuncType.TANH
+            config.generator().type(),
+            config.solver().type(),
+            config.costFunc().type()
         );
+
 
         System.out.println(maze.solution().totalCost() + " " + maze.solution().path().size());
 
