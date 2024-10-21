@@ -1,12 +1,14 @@
 # Maze settings
 [maze]
-height = 50
-width = 50
+height = 30
+width = 30
 
 # Maze visualization settings
 [visuals]
-image = true
+image = false
 console = true
+# Size of maze cells (px)
+cell_size = 10
 filename = "maze.png"
 
 # Maze generator settings

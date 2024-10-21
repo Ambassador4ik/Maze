@@ -11,28 +11,20 @@ import heightmap.providers.RandomHMProvider;
 public class HeightMapProviderFactory {
     public static HeightMapProvider createProvider(
         ProviderType type,
-        ProviderParams params
+        int heightRange
     ) {
         return switch (type) {
-            case RANDOM -> {
-                if (!(params instanceof RandomParams randomParams)) {
-                    throw new IllegalArgumentException("Invalid parameters for RandomHMProvider.");
-                }
-                yield new RandomHMProvider(randomParams.heightRange());
-            }
+            case RANDOM -> new RandomHMProvider(heightRange);
             case PERLIN_NOISE -> {
-                if (!(params instanceof PerlinNoiseParams perlinNoiseParams)) {
-                    throw new IllegalArgumentException("Invalid parameters for PerlinNoiseHMProvider.");
-                }
+                PerlinNoiseParams params = new PerlinNoiseParams(heightRange);
                 yield new PerlinNoiseHMProvider(
-                    perlinNoiseParams.scale(),
-                    perlinNoiseParams.octaves(),
-                    perlinNoiseParams.persistence(),
-                    perlinNoiseParams.lacunarity(),
-                    perlinNoiseParams.heightRange()
+                    params.scale(),
+                    params.octaves(),
+                    params.persistence(),
+                    params.lacunarity(),
+                    params.heightRange()
                 );
             }
-            default -> throw new IllegalArgumentException("Unsupported ProviderType: " + type);
         };
     }
 }

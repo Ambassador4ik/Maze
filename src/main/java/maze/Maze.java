@@ -9,7 +9,9 @@ import util.Pair;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Maze {
     @Getter private Node[][] grid;
@@ -18,9 +20,6 @@ public class Maze {
     private final int width;
     private final int height;
 
-    @Getter private boolean isInitialized;
-    @Getter private boolean isSolved;
-
     private static final SecureRandom random = new SecureRandom();
 
     public Maze(int width, int height) {
@@ -28,9 +27,6 @@ public class Maze {
         this.height = height;
 
         init();
-
-        this.isInitialized = false;
-        this.isSolved = false;
     }
 
     public void clear() {
@@ -194,42 +190,163 @@ public class Maze {
         grid[height - 1][width - 1].walls().setWall(Node.Direction.SOUTH, false);
     }
 
-    /**
-     * Prints the maze to the console for visualization.
-     *
-     * @param grid the maze grid
-     */
-    public static void printMaze(Node[][] grid) {
-        int height = grid.length;
-        int width = grid[0].length;
-
+    public void print() {
         // Print the top boundary
+        StringBuilder topBoundary = new StringBuilder();
         for (int x = 0; x < width; x++) {
-            System.out.print("+---");
+            topBoundary.append("+---");
         }
-        System.out.println("+");
+        topBoundary.append("+");
+        System.out.println(topBoundary.toString());
 
         for (int y = 0; y < height; y++) {
-            StringBuilder top = new StringBuilder("|");
-            StringBuilder bottom = new StringBuilder("+");
+            StringBuilder rowTop = new StringBuilder("|");
+            StringBuilder rowBottom = new StringBuilder("+");
 
             for (int x = 0; x < width; x++) {
                 Node current = grid[y][x];
-                top.append("   "); // Space for the cell
+
+                // Display the height in the cell, adjust spacing based on height value
+                String heightStr = String.valueOf(current.height());
+                if (heightStr.length() == 1) {
+                    heightStr = " " + heightStr + " ";
+                } else if (heightStr.length() == 2) {
+                    heightStr = heightStr + " ";
+                }
+                rowTop.append(heightStr);
+
+                // East wall
                 if (current.walls().hasWall(Node.Direction.EAST)) {
-                    top.append("|");
+                    rowTop.append("|");
                 } else {
-                    top.append(" ");
+                    rowTop.append(" ");
                 }
 
+                // South wall
                 if (current.walls().hasWall(Node.Direction.SOUTH)) {
-                    bottom.append("---+");
+                    rowBottom.append("---+");
                 } else {
-                    bottom.append("   +");
+                    rowBottom.append("   +");
                 }
             }
-            System.out.println(top.toString());
-            System.out.println(bottom.toString());
+            System.out.println(rowTop.toString());
+            System.out.println(rowBottom.toString());
         }
+    }
+
+    /**
+     * Returns a string representation of the maze, highlighting the solution path if available.
+     *
+     * @return the string representation of the maze with ANSI color codes for the solution path
+     */
+    public String getMazeAsString() {
+        StringBuilder sb = new StringBuilder();
+
+        // ANSI escape codes for coloring
+        final String ANSI_RESET = "\u001B[0m";
+        final String ANSI_BG_GREEN = "\u001B[45m"; // Background Green
+
+        // Determine the fixed cell width based on the maximum height value
+        int maxHeight = getMaxHeight();
+        int cellWidth = String.valueOf(maxHeight).length() + 2; // Adding padding
+
+        // Top boundary
+        StringBuilder topBoundary = new StringBuilder();
+        for (int x = 0; x < width; x++) {
+            topBoundary.append("+");
+            for (int i = 0; i < cellWidth; i++) {
+                topBoundary.append("-");
+            }
+        }
+        topBoundary.append("+\n");
+        sb.append(topBoundary);
+
+        // Prepare a set of nodes that are in the solution path for quick lookup
+        Set<Node> solutionPath = new HashSet<>();
+        if (solution != null && solution.path() != null) {
+            solutionPath.addAll(solution.path());
+        }
+
+        for (int y = 0; y < height; y++) {
+            StringBuilder rowTop = new StringBuilder("|");
+            StringBuilder rowBottom = new StringBuilder("+");
+
+            for (int x = 0; x < width; x++) {
+                Node current = grid[y][x];
+                String heightStr = String.valueOf(current.height());
+
+                // Format height string to occupy (cellWidth) spaces, centered
+                heightStr = centerString(heightStr, cellWidth);
+
+                // Check if current node is part of the solution path
+                if (solutionPath.contains(current)) {
+                    // Highlight the cell with background color
+                    rowTop.append(ANSI_BG_GREEN).append(heightStr).append(ANSI_RESET);
+                } else {
+                    // Regular cell with padding
+                    rowTop.append(" ".repeat(cellWidth));
+                }
+
+                // East wall
+                if (current.walls().hasWall(Node.Direction.EAST)) {
+                    rowTop.append("|");
+                } else {
+                    rowTop.append(" ");
+                }
+
+                // South wall
+                if (current.walls().hasWall(Node.Direction.SOUTH)) {
+                    for (int i = 0; i < cellWidth; i++) {
+                        rowBottom.append("-");
+                    }
+                    rowBottom.append("+");
+                } else {
+                    for (int i = 0; i < cellWidth; i++) {
+                        rowBottom.append(" ");
+                    }
+                    rowBottom.append("+");
+                }
+            }
+            rowTop.append("\n");
+            rowBottom.append("\n");
+            sb.append(rowTop);
+            sb.append(rowBottom);
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Centers a string within a given width by padding with spaces.
+     *
+     * @param text the string to center
+     * @param width the total width of the resulting string
+     * @return the centered string
+     */
+    private String centerString(String text, int width) {
+        if (text.length() >= width) {
+            return text.substring(0, width);
+        }
+        int totalPadding = width - text.length();
+        int paddingStart = totalPadding / 2;
+        int paddingEnd = totalPadding - paddingStart;
+        return " ".repeat(paddingStart) + text + " ".repeat(paddingEnd);
+    }
+
+    /**
+     * Finds the maximum height value in the maze grid.
+     *
+     * @return the maximum height value
+     */
+    private int getMaxHeight() {
+        int max = Integer.MIN_VALUE;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                if (grid[y][x].height() > max) {
+                    max = grid[y][x].height();
+                }
+            }
+        }
+        return max;
     }
 }

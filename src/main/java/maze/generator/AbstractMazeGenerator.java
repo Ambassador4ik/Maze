@@ -1,5 +1,7 @@
 package maze.generator;
 
+import config.Config;
+import config.Configuration;
 import maze.Node;
 
 import java.security.SecureRandom;
@@ -8,7 +10,7 @@ import static maze.Maze.*; // Ensure Maze class has the necessary static methods
 
 public abstract class AbstractMazeGenerator implements MazeGenerator {
     // Probability to remove an additional wall to create loops
-    protected static final double LOOP_PROBABILITY = 0.05;
+    protected static final double LOOP_PROBABILITY = Config.getInstance().generator().loopProbability();
     protected final SecureRandom random;
 
     public AbstractMazeGenerator() {

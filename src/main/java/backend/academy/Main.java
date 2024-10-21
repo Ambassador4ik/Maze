@@ -5,6 +5,7 @@ import config.ConfigLoader;
 import config.Configuration;
 import heightmap.HeightMapProviderFactory;
 import heightmap.params.PerlinNoiseParams;
+import heightmap.params.ProviderParams;
 import heightmap.providers.HeightMapProvider;
 import heightmap.providers.ProviderType;
 import lombok.experimental.UtilityClass;
@@ -23,14 +24,12 @@ import java.io.IOException;
 
 @UtilityClass
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Configuration config = Config.getInstance();
 
         HeightMapProvider heightMapProvider = HeightMapProviderFactory.createProvider(
-            ProviderType.PERLIN_NOISE,
-            new PerlinNoiseParams(
-                config.surface().heightRange()
-            )
+            config.surface().type(),
+            config.surface().heightRange()
         );
 
         Maze maze = MazeFactory.createSolvedMaze(
@@ -42,24 +41,17 @@ public class Main {
             config.costFunc().type()
         );
 
+        System.out.println("Solution cost with " + config.costFunc().type() + ": " + maze.solution().totalCost());
+        System.out.println("Solution length: " + maze.solution().path().size());
 
-        System.out.println(maze.solution().totalCost() + " " + maze.solution().path().size());
+        if (config.visuals().console()) {
+            System.out.println(maze.getMazeAsString());
+        }
 
-        MazeVisualizer visualizer = new MazeVisualizer(maze, 20);
-        visualizer.drawSolution(maze.solution(), Color.BLUE);
-
-        maze.solveWith(new JohnsonsSolver(new ConstantCostFunc()));
-        visualizer.drawSolution(maze.solution(), Color.MAGENTA);
-
-
-        //maze.solution().printSolutionToFile("solution1.txt");
-
-        //maze.solveWith(new AStarSolver(new ConstantCostFunc()));
-        //System.out.println(maze.solution().costWith(new NonLinearCostFunc()));
-        //maze.solution().printSolutionToFile("solution2.txt");
-
-
-        System.out.println("Cost of const as tangent: " + maze.solution().costWith(new TanhCostFunc()) + " " + maze.solution().path().size());
-        visualizer.saveImage("img.png");
+        if (config.visuals().image()) {
+            MazeVisualizer visualizer = new MazeVisualizer(maze, config.visuals().cellSize());
+            visualizer.drawSolution(maze.solution(), Color.BLUE);
+            visualizer.saveImage(config.visuals().filename());
+        }
     }
 }
