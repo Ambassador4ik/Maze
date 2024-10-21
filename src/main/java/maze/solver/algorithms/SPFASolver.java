@@ -1,13 +1,14 @@
 package maze.solver.algorithms;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import maze.Node;
 import maze.solver.AbstractMazeSolver;
 import maze.solver.functions.CostFunc;
 import maze.solver.structs.Graph;
 import maze.solver.structs.MazeSolution;
-import java.util.Arrays;
-import java.util.List;
-import java.util.*;
 
 /**
  * Implements the Shortest Path Faster Algorithm (SPFA) to solve a maze.

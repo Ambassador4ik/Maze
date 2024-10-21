@@ -1,12 +1,12 @@
 package maze.solver.algorithms;
 
+import java.util.Arrays;
+import java.util.List;
 import maze.Node;
 import maze.solver.AbstractMazeSolver;
 import maze.solver.functions.CostFunc;
 import maze.solver.structs.Graph;
 import maze.solver.structs.MazeSolution;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Implements the Bellman-Ford algorithm to solve a maze.

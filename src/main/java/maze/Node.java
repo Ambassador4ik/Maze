@@ -1,10 +1,9 @@
 package maze;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.EnumMap;
 import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Represents a node (cell) in a maze with coordinates, height, walls, and a visited flag.
@@ -12,53 +11,6 @@ import java.util.Map;
 @Getter
 @Setter
 public class Node {
-
-    /**
-     * Enum representing possible wall directions.
-     */
-    public enum Direction {
-        NORTH, SOUTH, EAST, WEST
-    }
-
-    /**
-     * Represents the walls of a node using an EnumMap for efficiency.
-     */
-    @Getter
-    @Setter
-    public static class Walls {
-        private final Map<Direction, Boolean> walls;
-
-        /**
-         * Initializes all walls to be present.
-         */
-        public Walls() {
-            walls = new EnumMap<>(Direction.class);
-            for (Direction direction : Direction.values()) {
-                walls.put(direction, true);
-            }
-        }
-
-        /**
-         * Checks if a wall exists in the given direction.
-         *
-         * @param direction the direction to check
-         * @return true if the wall exists, false otherwise
-         */
-        public boolean hasWall(Direction direction) {
-            return walls.getOrDefault(direction, false);
-        }
-
-        /**
-         * Sets the presence of a wall in the given direction.
-         *
-         * @param direction the direction to set
-         * @param exists whether the wall exists
-         */
-        public void setWall(Direction direction, boolean exists) {
-            walls.put(direction, exists);
-        }
-    }
-
     private final int x;
     private final int y;
     private int height;
@@ -94,5 +46,51 @@ public class Node {
         this.height = height;
         this.walls = walls;
         this.visited = false;
+    }
+
+    /**
+     * Enum representing possible wall directions.
+     */
+    public enum Direction {
+        NORTH, SOUTH, EAST, WEST
+    }
+
+    /**
+     * Represents the walls of a node using an EnumMap for efficiency.
+     */
+    @Getter
+    @Setter
+    public static class Walls {
+        private final Map<Direction, Boolean> walls;
+
+        /**
+         * Initializes all walls to be present.
+         */
+        public Walls() {
+            walls = new EnumMap<>(Direction.class);
+            for (Direction direction : Direction.values()) {
+                walls.put(direction, Boolean.TRUE);
+            }
+        }
+
+        /**
+         * Checks if a wall exists in the given direction.
+         *
+         * @param direction the direction to check
+         * @return true if the wall exists, false otherwise
+         */
+        public boolean hasWall(Direction direction) {
+            return walls.getOrDefault(direction, Boolean.FALSE);
+        }
+
+        /**
+         * Sets the presence of a wall in the given direction.
+         *
+         * @param direction the direction to set
+         * @param exists whether the wall exists
+         */
+        public void setWall(Direction direction, boolean exists) {
+            walls.put(direction, exists);
+        }
     }
 }

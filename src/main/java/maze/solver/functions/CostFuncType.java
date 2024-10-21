@@ -1,7 +1,5 @@
 package maze.solver.functions;
 
-import maze.generator.GeneratorType;
-
 public enum CostFuncType {
     LINEAR {
         @Override
@@ -34,7 +32,7 @@ public enum CostFuncType {
         try {
             return CostFuncType.valueOf(typeStr.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid solver type: " + typeStr);
+            throw new IllegalArgumentException("Invalid solver type: " + typeStr, e);
         }
     }
 }

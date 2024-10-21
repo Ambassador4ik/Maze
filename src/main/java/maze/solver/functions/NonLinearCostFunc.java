@@ -1,9 +1,12 @@
 package maze.solver.functions;
 
+import config.Config;
+
 public class NonLinearCostFunc extends CostFunc {
-    private final double PENALTY_TRESHOLD = 3;
+    private static final double PENALTY_TRESHOLD = Config.getInstance().costFunc().penaltyTreshold();
 
     @Override
+    @SuppressWarnings("MagicNumber")
     double calculateClimbCost(int heightDiff) {
         return Math.pow(heightDiff, 1.5);
     }

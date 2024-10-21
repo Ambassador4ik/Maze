@@ -1,12 +1,10 @@
 package maze.generator;
 
 import config.Config;
-import config.Configuration;
-import maze.Node;
-
 import java.security.SecureRandom;
-
-import static maze.Maze.*; // Ensure Maze class has the necessary static methods
+import maze.Node;
+import static maze.Maze.addLoops;
+import static maze.Maze.setupExits;
 
 public abstract class AbstractMazeGenerator implements MazeGenerator {
     // Probability to remove an additional wall to create loops
@@ -20,7 +18,9 @@ public abstract class AbstractMazeGenerator implements MazeGenerator {
     @Override
     public void generate(Node[][] grid) {
         int height = grid.length;
-        if (height == 0) return;
+        if (height == 0) {
+            return;
+        }
         int width = grid[0].length;
 
         initializeGrid(grid, height, width);

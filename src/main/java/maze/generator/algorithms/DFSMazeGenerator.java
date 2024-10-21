@@ -1,34 +1,32 @@
 package maze.generator.algorithms;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
 import maze.Node;
 import maze.Node.Direction;
 import maze.generator.AbstractMazeGenerator;
 import util.Pair;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
 import static maze.Maze.getNeighborCoordinates;
+import static maze.Maze.getUnvisitedNeighbors;
 import static maze.Maze.removeWall;
 
 public class DFSMazeGenerator extends AbstractMazeGenerator {
     public DFSMazeGenerator() {
-        super();
     }
 
     @Override
     protected void generateMaze(Node[][] grid, int height, int width) {
         // Stack for DFS
-        Deque<Node> stack = new ArrayDeque<>();
+        Deque<Node> nodes = new ArrayDeque<>();
 
         // Start from the top-left corner
         Node start = grid[0][0];
         start.visited(true);
-        stack.push(start);
+        nodes.push(start);
 
-        while (!stack.isEmpty()) {
-            Node current = stack.peek();
+        while (!nodes.isEmpty()) {
+            Node current = nodes.peek();
             List<Direction> unvisitedNeighbors = getUnvisitedNeighbors(current, grid, width, height);
 
             if (!unvisitedNeighbors.isEmpty()) {
@@ -42,28 +40,13 @@ public class DFSMazeGenerator extends AbstractMazeGenerator {
                         // Remove walls between current and neighbor
                         removeWall(current, neighbor, direction);
                         neighbor.visited(true);
-                        stack.push(neighbor);
+                        nodes.push(neighbor);
                     }
                 }
             } else {
                 // Backtrack
-                stack.pop();
+                nodes.pop();
             }
         }
-    }
-
-    // Helper method to get unvisited neighbors
-    private List<Direction> getUnvisitedNeighbors(Node current, Node[][] grid, int width, int height) {
-        List<Direction> directions = new ArrayList<>();
-        for (Direction dir : Direction.values()) {
-            Pair<Integer, Integer> neighborCoords = getNeighborCoordinates(current, dir, width, height);
-            if (neighborCoords != null) {
-                Node neighbor = grid[neighborCoords.value()][neighborCoords.key()];
-                if (!neighbor.visited()) {
-                    directions.add(dir);
-                }
-            }
-        }
-        return directions;
     }
 }

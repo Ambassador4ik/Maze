@@ -1,26 +1,15 @@
 package backend.academy;
 
 import config.Config;
-import config.ConfigLoader;
 import config.Configuration;
 import heightmap.HeightMapProviderFactory;
-import heightmap.params.PerlinNoiseParams;
-import heightmap.params.ProviderParams;
 import heightmap.providers.HeightMapProvider;
-import heightmap.providers.ProviderType;
+import java.awt.Color;
 import lombok.experimental.UtilityClass;
 import maze.Maze;
 import maze.MazeFactory;
-import maze.generator.GeneratorType;
-import maze.solver.SolverType;
-import maze.solver.algorithms.JohnsonsSolver;
-import maze.solver.functions.ConstantCostFunc;
-import maze.solver.functions.CostFuncType;
-import maze.solver.functions.TanhCostFunc;
+import util.OutputHandler;
 import visuals.MazeVisualizer;
-
-import java.awt.Color;
-import java.io.IOException;
 
 @UtilityClass
 public class Main {
@@ -41,11 +30,11 @@ public class Main {
             config.costFunc().type()
         );
 
-        System.out.println("Solution cost with " + config.costFunc().type() + ": " + maze.solution().totalCost());
-        System.out.println("Solution length: " + maze.solution().path().size());
+        OutputHandler.println("Solution cost with " + config.costFunc().type() + ": " + maze.solution().totalCost());
+        OutputHandler.println("Solution length: " + maze.solution().path().size());
 
         if (config.visuals().console()) {
-            System.out.println(maze.getMazeAsString());
+            OutputHandler.println(maze.getMazeAsString());
         }
 
         if (config.visuals().image()) {

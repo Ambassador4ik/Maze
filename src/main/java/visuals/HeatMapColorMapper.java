@@ -1,10 +1,13 @@
 package visuals;
 
 import java.awt.Color;
+import lombok.experimental.UtilityClass;
 
 /**
  * Utility class for mapping height values to colors using a custom 256-color colormap.
  */
+@UtilityClass
+@SuppressWarnings("MagicNumber")
 public class HeatMapColorMapper {
 
     /**

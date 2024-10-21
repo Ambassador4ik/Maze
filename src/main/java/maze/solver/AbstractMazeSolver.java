@@ -1,13 +1,16 @@
 package maze.solver;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import maze.Maze;
 import maze.Node;
 import maze.solver.functions.CostFunc;
 import maze.solver.structs.Graph;
 import maze.solver.structs.MazeSolution;
 import util.Pair;
-
-import java.util.*;
 
 /**
  * An abstract base class for MazeSolver implementations.

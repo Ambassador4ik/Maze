@@ -1,19 +1,17 @@
 package maze.generator.algorithms;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import maze.Node;
 import maze.Node.Direction;
 import maze.generator.AbstractMazeGenerator;
 import util.Pair;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import static maze.Maze.getNeighborCoordinates;
 import static maze.Maze.removeWall;
 
 public class KruskalMazeGenerator extends AbstractMazeGenerator {
     public KruskalMazeGenerator() {
-        super();
     }
 
     @Override
@@ -48,8 +46,11 @@ public class KruskalMazeGenerator extends AbstractMazeGenerator {
         // Process each wall in random order
         for (Wall wall : walls) {
             int cell1 = wall.y * width + wall.x;
-            Pair<Integer, Integer> neighborCoords = getNeighborCoordinates(grid[wall.y][wall.x], wall.direction, width, height);
-            if (neighborCoords == null) continue;
+            Pair<Integer, Integer> neighborCoords = getNeighborCoordinates(grid[wall.y][wall.x], wall.direction,
+                width, height);
+            if (neighborCoords == null) {
+                continue;
+            }
             int nx = neighborCoords.key();
             int ny = neighborCoords.value();
             int cell2 = ny * width + nx;
@@ -68,7 +69,8 @@ public class KruskalMazeGenerator extends AbstractMazeGenerator {
 
     // Helper class to represent walls between cells
     private static class Wall {
-        int x, y;
+        int x;
+        int y;
         Direction direction;
 
         Wall(int x, int y, Direction direction) {
@@ -86,14 +88,14 @@ public class KruskalMazeGenerator extends AbstractMazeGenerator {
         DisjointSet(int size) {
             parent = new int[size];
             rank = new int[size];
-            for(int i=0; i<size; i++) {
+            for (int i = 0; i < size; i++) {
                 parent[i] = i;
                 rank[i] = 0;
             }
         }
 
         int find(int x) {
-            if(parent[x] != x) {
+            if (parent[x] != x) {
                 parent[x] = find(parent[x]); // Path compression
             }
             return parent[x];
@@ -102,12 +104,14 @@ public class KruskalMazeGenerator extends AbstractMazeGenerator {
         void union(int x, int y) {
             int xRoot = find(x);
             int yRoot = find(y);
-            if(xRoot == yRoot) return;
+            if (xRoot == yRoot) {
+                return;
+            }
 
             // Union by rank
-            if(rank[xRoot] < rank[yRoot]) {
+            if (rank[xRoot] < rank[yRoot]) {
                 parent[xRoot] = yRoot;
-            } else if(rank[xRoot] > rank[yRoot]) {
+            } else if (rank[xRoot] > rank[yRoot]) {
                 parent[yRoot] = xRoot;
             } else {
                 parent[yRoot] = xRoot;

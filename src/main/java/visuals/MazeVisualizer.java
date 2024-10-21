@@ -1,15 +1,17 @@
 package visuals;
 
-import maze.Maze;
-import maze.Node;
-import maze.solver.structs.MazeSolution;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import javax.imageio.ImageIO;
+import maze.Maze;
+import maze.Node;
+import maze.solver.structs.MazeSolution;
+import util.OutputHandler;
 
 /**
  * Utility class for visualizing the maze.
@@ -33,8 +35,12 @@ public class MazeVisualizer {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int nodeHeight = grid[y][x].height();
-                if (nodeHeight < minHeight) minHeight = nodeHeight;
-                if (nodeHeight > maxHeight) maxHeight = nodeHeight;
+                if (nodeHeight < minHeight) {
+                    minHeight = nodeHeight;
+                }
+                if (nodeHeight > maxHeight) {
+                    maxHeight = nodeHeight;
+                }
             }
         }
 
@@ -86,6 +92,7 @@ public class MazeVisualizer {
         }
     }
 
+    @SuppressWarnings("MagicNumber")
     public void drawSolution(MazeSolution solution, Color color) {
         graphics.setColor(color);
         graphics.setStroke(new BasicStroke((float) cellSize / 3));
@@ -106,9 +113,17 @@ public class MazeVisualizer {
         graphics.dispose();
 
         try {
-            ImageIO.write(img, "PNG", new File(path));
+            Path baseDir = Paths.get(".").toAbsolutePath().normalize();
+            Path targetPath = baseDir.resolve(path).normalize();
+
+            // Check if the target path is within the base directory
+            if (!targetPath.startsWith(baseDir)) {
+                throw new SecurityException("Invalid path: Potential path traversal attempt detected.");
+            }
+
+            ImageIO.write(img, "PNG", targetPath.toFile());
         } catch (Exception e) {
-            System.out.println("dskjfksajhfkds");
+            OutputHandler.println(e.getMessage());
         }
     }
 }

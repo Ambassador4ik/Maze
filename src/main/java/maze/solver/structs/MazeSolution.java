@@ -1,55 +1,22 @@
 package maze.solver.structs;
 
-import lombok.Getter;
-import maze.Node;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.List;
+import maze.Node;
 import maze.solver.functions.CostFunc;
 
 /**
  * Represents the solution to a maze, containing the path from start to goal and the total cost.
+ *
+ * @param totalCost New field to store total cost
  */
-public class MazeSolution {
-    @Getter private final List<Node> path;
-    @Getter private final double totalCost; // New field to store total cost
-
+public record MazeSolution(List<Node> path, double totalCost) {
     /**
      * Constructs a MazeSolution with the specified path and total cost.
      *
-     * @param path the list of nodes representing the path from start to goal
+     * @param path      the list of nodes representing the path from start to goal
      * @param totalCost the total cost of the path
      */
-    public MazeSolution(List<Node> path, double totalCost) {
-        this.path = path;
-        this.totalCost = totalCost;
-    }
-
-    /**
-     * Prints the solution path and total cost to the console.
-     */
-    public void printSolution() {
-        for (Node node : path) {
-            System.out.println("(" + node.x() + ", " + node.y() + ")");
-        }
-        System.out.println("Total Cost: " + totalCost); // Print total cost
-    }
-
-    /**
-     * Prints the solution path and total cost to a file.
-     *
-     * @param filename the name of the file to write the solution to
-     */
-    public void printSolutionToFile(String filename) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            for (Node node : path) {
-                writer.write("(" + node.x() + ", " + node.y() + ")");
-                writer.newLine();  // Adds a new line after each node
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public MazeSolution {
     }
 
     /**

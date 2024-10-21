@@ -1,14 +1,15 @@
 package maze.solver.algorithms;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
 import maze.Node;
 import maze.solver.AbstractMazeSolver;
 import maze.solver.functions.CostFunc;
 import maze.solver.structs.Graph;
 import maze.solver.structs.MazeSolution;
 import util.Pair;
-import java.util.Arrays;
-import java.util.List;
-import java.util.*;
 
 /**
  * Implements Johnson's algorithm to solve a maze with potential negative edge weights.

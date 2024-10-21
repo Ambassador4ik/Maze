@@ -1,19 +1,33 @@
 package heightmap.providers;
 
+import java.security.SecureRandom;
 import lombok.Getter;
 import maze.Node;
-import java.security.SecureRandom;
 
+/**
+ * PerlinNoiseHMProvider is a class that generates a heightmap using Perlin Noise.
+ * It implements the HeightMapProvider interface.
+ */
+@SuppressWarnings("MagicNumber")
 public class PerlinNoiseHMProvider implements HeightMapProvider {
-    @Getter private final double scale;
-    @Getter private final int octaves;
-    @Getter private final double persistence;
-    @Getter private final double lacunarity;
-    @Getter private final int heightRange;
+    @Getter private final double scale;        // Scale of the noise
+    @Getter private final int octaves;         // Number of octaves in the noise
+    @Getter private final double persistence;  // Persistence value for the noise
+    @Getter private final double lacunarity;   // Lacunarity value for the noise
+    @Getter private final int heightRange;     // Range of heights for the heightmap
 
-    private int[] permutation;
-    private final SecureRandom random;
+    private int[] permutation;                 // Permutation array for the noise
+    private final SecureRandom random;         // Secure random number generator
 
+    /**
+     * Constructor to initialize PerlinNoiseHMProvider with custom noise parameters.
+     *
+     * @param scale        Scale of the Perlin noise
+     * @param octaves      Number of octaves used in the noise
+     * @param persistence  Persistence value for the noise
+     * @param lacunarity   Lacunarity value for the noise
+     * @param heightRange  Range of heights for the heightmap
+     */
     public PerlinNoiseHMProvider(
         double scale,
         int octaves,
@@ -32,6 +46,9 @@ public class PerlinNoiseHMProvider implements HeightMapProvider {
         initPermutation();
     }
 
+    /**
+     * Initializes the permutation array used for the Perlin noise algorithm.
+     */
     private void initPermutation() {
         // Initialize the permutation array with values from 0 to 255
         permutation = new int[512];
@@ -55,17 +72,36 @@ public class PerlinNoiseHMProvider implements HeightMapProvider {
         }
     }
 
-    // Fade function as defined by Ken Perlin
+    /**
+     * Fade function used in the Perlin noise algorithm, as defined by Ken Perlin.
+     *
+     * @param t Input value for the fade function
+     * @return Smoothed value
+     */
     private double fade(double t) {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 
-    // Linear interpolation
+    /**
+     * Performs linear interpolation between two values.
+     *
+     * @param a First value
+     * @param b Second value
+     * @param t Interpolation factor
+     * @return Interpolated value
+     */
     private double lerp(double a, double b, double t) {
         return a + t * (b - a);
     }
 
-    // Gradient function
+    /**
+     * Gradient function used in the Perlin noise algorithm.
+     *
+     * @param hash Hash value
+     * @param x    X-coordinate
+     * @param y    Y-coordinate
+     * @return Gradient value
+     */
     private double grad(int hash, double x, double y) {
         int h = hash & 7;      // Convert low 3 bits of hash code
         double u = h < 4 ? x : y;
@@ -73,7 +109,13 @@ public class PerlinNoiseHMProvider implements HeightMapProvider {
         return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
     }
 
-    // Perlin noise function for 2D
+    /**
+     * Perlin noise function for 2D coordinates.
+     *
+     * @param x X-coordinate
+     * @param y Y-coordinate
+     * @return Noise value at the given coordinates
+     */
     private double perlin(double x, double y) {
         int xi = (int) Math.floor(x) & 255;
         int yi = (int) Math.floor(y) & 255;
@@ -89,16 +131,24 @@ public class PerlinNoiseHMProvider implements HeightMapProvider {
         int ba = permutation[permutation[xi + 1] + yi];
         int bb = permutation[permutation[xi + 1] + yi + 1];
 
-        double x1, x2;
+        double x1;
+        double x2;
         x1 = lerp(grad(aa, xf, yf), grad(ba, xf - 1, yf), u);
         x2 = lerp(grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1), u);
         return lerp(x1, x2, v);
     }
 
+    /**
+     * Fills the 2D array of nodes with height values generated using Perlin noise.
+     *
+     * @param nodes 2D array of Node objects representing the heightmap
+     */
     @Override
     public void fillMap(Node[][] nodes) {
         int height = nodes.length;
-        if (height == 0) return;
+        if (height == 0) {
+            return;
+        }
         int width = nodes[0].length;
 
         // Calculate total amplitude for normalization

@@ -1,11 +1,11 @@
 # Maze settings
 [maze]
-height = 30
-width = 30
+height = 20
+width = 20
 
 # Maze visualization settings
 [visuals]
-image = false
+image = true
 console = true
 # Size of maze cells (px)
 cell_size = 10
@@ -33,8 +33,10 @@ type = "BELLMAN_FORD"
 
 # Cost function used by solver for path optimization
 # Valid types are "TANH", "CONST", "LINEAR", "NON_LINEAR"
+# Penalty treshold is only used by some functions
 [costfunc]
 type = "TANH"
+penalty_treshold = 3
 
 # Perlin noise surface generator settings
 # Learn more at https://en.wikipedia.org/wiki/Perlin_noise

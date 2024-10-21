@@ -31,7 +31,7 @@ public enum SolverType {
         try {
             return SolverType.valueOf(typeStr.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid solver type: " + typeStr);
+            throw new IllegalArgumentException("Invalid solver type: " + typeStr, e);
         }
     }
 }

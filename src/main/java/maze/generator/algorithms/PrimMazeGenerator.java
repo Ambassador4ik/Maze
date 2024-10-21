@@ -1,18 +1,16 @@
 package maze.generator.algorithms;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import maze.Node;
 import maze.Node.Direction;
 import maze.generator.AbstractMazeGenerator;
 import util.Pair;
-
-import java.util.Comparator;
-import java.util.PriorityQueue;
 import static maze.Maze.getNeighborCoordinates;
 import static maze.Maze.removeWall;
 
 public class PrimMazeGenerator extends AbstractMazeGenerator {
     public PrimMazeGenerator() {
-        super();
     }
 
     @Override
@@ -40,7 +38,9 @@ public class PrimMazeGenerator extends AbstractMazeGenerator {
             Direction direction = currentWall.direction;
             Pair<Integer, Integer> neighborCoords = getNeighborCoordinates(current, direction, width, height);
 
-            if (neighborCoords == null) continue;
+            if (neighborCoords == null) {
+                continue;
+            }
 
             Node neighbor = grid[neighborCoords.value()][neighborCoords.key()];
 

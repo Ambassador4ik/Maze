@@ -9,5 +9,6 @@ public abstract class CostFunc {
     }
 
     abstract double calculateClimbCost(int heightDiff);
+
     abstract double calculateFallCost(int heightDiff);
 }

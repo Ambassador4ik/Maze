@@ -3,7 +3,6 @@ package maze.generator;
 import maze.generator.algorithms.DFSMazeGenerator;
 import maze.generator.algorithms.KruskalMazeGenerator;
 import maze.generator.algorithms.PrimMazeGenerator;
-import maze.solver.SolverType;
 
 public enum GeneratorType {
     DFS {
@@ -31,7 +30,7 @@ public enum GeneratorType {
         try {
             return GeneratorType.valueOf(typeStr.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid solver type: " + typeStr);
+            throw new IllegalArgumentException("Invalid solver type: " + typeStr, e);
         }
     }
 }

@@ -1,27 +1,28 @@
 package config;
 
 import java.io.IOException;
+import lombok.experimental.UtilityClass;
 
+/**
+ * Utility class for loading and providing access to the global {@link Configuration} instance.
+ */
+@UtilityClass
 public class Config {
-    // Private static final Configuration instance
     private static final Configuration INSTANCE;
 
-    // Static block to initialize the Configuration
     static {
         try {
             INSTANCE = ConfigLoader.loadConfig("config.toml");
         } catch (IOException e) {
-            // Handle the exception as needed
             throw new RuntimeException("Failed to load configuration", e);
         }
     }
 
-    // Private constructor to prevent instantiation
-    private Config() {
-        // Prevent instantiation
-    }
-
-    // Public method to provide access to the Configuration instance
+    /**
+     * Provides the singleton instance of {@link Configuration}.
+     *
+     * @return the global configuration instance
+     */
     public static Configuration getInstance() {
         return INSTANCE;
     }

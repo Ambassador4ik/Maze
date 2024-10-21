@@ -1,17 +1,17 @@
 package maze;
 
 import heightmap.providers.HeightMapProvider;
-import lombok.Getter;
-import maze.generator.MazeGenerator;
-import maze.solver.structs.MazeSolution;
-import maze.solver.MazeSolver;
-import util.Pair;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import lombok.Getter;
+import maze.generator.MazeGenerator;
+import maze.solver.MazeSolver;
+import maze.solver.structs.MazeSolution;
+import util.Pair;
 
 public class Maze {
     @Getter private Node[][] grid;
@@ -20,7 +20,7 @@ public class Maze {
     private final int width;
     private final int height;
 
-    private static final SecureRandom random = new SecureRandom();
+    private static final SecureRandom RANDOM = new SecureRandom();
 
     public Maze(int width, int height) {
         this.width = width;
@@ -91,7 +91,10 @@ public class Maze {
      * @param height    the height of the grid
      * @return a Pair representing the neighbor's (x, y) coordinates or null if out of bounds
      */
-    public static Pair<Integer, Integer> getNeighborCoordinates(Node current, Node.Direction direction, int width, int height) {
+    public static Pair<Integer, Integer> getNeighborCoordinates(
+        Node current, Node.Direction direction,
+        int width, int height
+    ) {
         int x = current.x();
         int y = current.y();
         switch (direction) {
@@ -107,6 +110,8 @@ public class Maze {
             case WEST:
                 x -= 1;
                 break;
+            default:
+                throw new IllegalArgumentException("No such direction!");
         }
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return new Pair<>(x, y);
@@ -163,9 +168,9 @@ public class Maze {
                     Pair<Integer, Integer> neighborCoords = getNeighborCoordinates(current, direction, width, height);
 
                     // Proceed only if neighbor exists, there is a wall, and probability condition is met
-                    if (neighborCoords != null &&
-                        current.walls().hasWall(direction) &&
-                        random.nextDouble() < loopProbability) {
+                    if (neighborCoords != null
+                        && current.walls().hasWall(direction)
+                        && RANDOM.nextDouble() < loopProbability) {
 
                         Node neighbor = grid[neighborCoords.value()][neighborCoords.key()];
                         removeWall(current, neighbor, direction);
@@ -190,50 +195,6 @@ public class Maze {
         grid[height - 1][width - 1].walls().setWall(Node.Direction.SOUTH, false);
     }
 
-    public void print() {
-        // Print the top boundary
-        StringBuilder topBoundary = new StringBuilder();
-        for (int x = 0; x < width; x++) {
-            topBoundary.append("+---");
-        }
-        topBoundary.append("+");
-        System.out.println(topBoundary.toString());
-
-        for (int y = 0; y < height; y++) {
-            StringBuilder rowTop = new StringBuilder("|");
-            StringBuilder rowBottom = new StringBuilder("+");
-
-            for (int x = 0; x < width; x++) {
-                Node current = grid[y][x];
-
-                // Display the height in the cell, adjust spacing based on height value
-                String heightStr = String.valueOf(current.height());
-                if (heightStr.length() == 1) {
-                    heightStr = " " + heightStr + " ";
-                } else if (heightStr.length() == 2) {
-                    heightStr = heightStr + " ";
-                }
-                rowTop.append(heightStr);
-
-                // East wall
-                if (current.walls().hasWall(Node.Direction.EAST)) {
-                    rowTop.append("|");
-                } else {
-                    rowTop.append(" ");
-                }
-
-                // South wall
-                if (current.walls().hasWall(Node.Direction.SOUTH)) {
-                    rowBottom.append("---+");
-                } else {
-                    rowBottom.append("   +");
-                }
-            }
-            System.out.println(rowTop.toString());
-            System.out.println(rowBottom.toString());
-        }
-    }
-
     /**
      * Returns a string representation of the maze, highlighting the solution path if available.
      *
@@ -253,9 +214,9 @@ public class Maze {
         // Top boundary
         StringBuilder topBoundary = new StringBuilder();
         for (int x = 0; x < width; x++) {
-            topBoundary.append("+");
+            topBoundary.append('+');
             for (int i = 0; i < cellWidth; i++) {
-                topBoundary.append("-");
+                topBoundary.append('-');
             }
         }
         topBoundary.append("+\n");
@@ -289,26 +250,26 @@ public class Maze {
 
                 // East wall
                 if (current.walls().hasWall(Node.Direction.EAST)) {
-                    rowTop.append("|");
+                    rowTop.append('|'); // Changed from "|" to '|'
                 } else {
-                    rowTop.append(" ");
+                    rowTop.append(' '); // Changed from " " to ' '
                 }
 
                 // South wall
                 if (current.walls().hasWall(Node.Direction.SOUTH)) {
                     for (int i = 0; i < cellWidth; i++) {
-                        rowBottom.append("-");
+                        rowBottom.append('-'); // Changed from "-" to '-'
                     }
-                    rowBottom.append("+");
+                    rowBottom.append('+'); // Changed from "+" to '+'
                 } else {
                     for (int i = 0; i < cellWidth; i++) {
-                        rowBottom.append(" ");
+                        rowBottom.append(' '); // Changed from " " to ' '
                     }
-                    rowBottom.append("+");
+                    rowBottom.append('+'); // Changed from "+" to '+'
                 }
             }
-            rowTop.append("\n");
-            rowBottom.append("\n");
+            rowTop.append('\n'); // Changed from "\n" to '\n'
+            rowBottom.append('\n'); // Changed from "\n" to '\n'
             sb.append(rowTop);
             sb.append(rowBottom);
         }
@@ -319,7 +280,7 @@ public class Maze {
     /**
      * Centers a string within a given width by padding with spaces.
      *
-     * @param text the string to center
+     * @param text  the string to center
      * @param width the total width of the resulting string
      * @return the centered string
      */

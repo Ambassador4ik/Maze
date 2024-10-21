@@ -1,6 +1,7 @@
 package maze;
 
 import heightmap.providers.HeightMapProvider;
+import lombok.experimental.UtilityClass;
 import maze.generator.GeneratorType;
 import maze.generator.MazeGenerator;
 import maze.solver.MazeSolver;
@@ -8,6 +9,7 @@ import maze.solver.SolverType;
 import maze.solver.functions.CostFunc;
 import maze.solver.functions.CostFuncType;
 
+@UtilityClass
 public class MazeFactory {
     public static Maze createSolvedMaze(
         int width,

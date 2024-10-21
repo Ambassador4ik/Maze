@@ -1,19 +1,18 @@
 package maze.solver.structs;
 
-import lombok.Getter;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 
 /**
  * Represents a graph structure for the maze, supporting both edge list and adjacency list representations.
  */
+@Getter
 public class Graph {
-    private final int numNodes;
-    @Getter private final List<Edge> edgeList;
-    @Getter private final List<List<Edge>> adjacencyList;
+    private final List<Edge> edgeList;
+    private final List<List<Edge>> adjacencyList;
 
     public Graph(int numNodes) {
-        this.numNodes = numNodes;
         this.edgeList = new ArrayList<>();
         this.adjacencyList = new ArrayList<>(numNodes);
         for (int i = 0; i < numNodes; i++) {
